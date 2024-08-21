@@ -6,13 +6,24 @@ import LoanForm from '../components/LoanForm';
 import { Loan } from '../types';
 
 const Home: React.FC = () => {
-  const [loans, setLoans] = useState([
+  const [loans, setLoans] = useState<Loan[]>([
     { id: 1, teacherName: 'Prof. João', eraserId: 101, loanDate: '2024-08-20' },
     { id: 2, teacherName: 'Prof. Maria', eraserId: 102, loanDate: '2024-08-21' },
   ]);
 
   const addLoan = (newLoan: Loan) => {
     setLoans([...loans, newLoan]);
+  };
+
+  const deleteLoan = (id: number) => {
+    setLoans(loans.filter(loan => loan.id !== id));
+  };
+
+  const returnLoan = (id: number) => {
+    const updatedLoans = loans.map(loan => 
+      loan.id === id ? { ...loan, loanDate: 'Devolvido' } : loan
+    );
+    setLoans(updatedLoans);
   };
 
   return (
@@ -22,7 +33,7 @@ const Home: React.FC = () => {
         <h2>Adicionar Novo Empréstimo</h2>
         <LoanForm onAddLoan={addLoan} />
         <h2>Empréstimos Ativos</h2>
-        <LoanList loans={loans} />
+        <LoanList loans={loans} onDelete={deleteLoan} onReturn={returnLoan} />
       </main>
     </div>
   );
